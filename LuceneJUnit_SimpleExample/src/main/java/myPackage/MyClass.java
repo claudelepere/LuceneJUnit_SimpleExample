@@ -11,6 +11,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
@@ -49,8 +50,15 @@ public class MyClass {
       IndexSearcher searcher = new IndexSearcher(reader);
       
       Query query = new TermQuery(new Term("name", "doe"));
+      PhraseQuery queryPhrase = new PhraseQuery();
+      Term termA = new Term("address", "dexter");
+      Term termB = new Term("address", "avenue");
+      queryPhrase.add(termA, 0);
+      queryPhrase.add(termB, 1);
+      queryPhrase.setSlop(0);
       
-      TopDocs topDocs = searcher.search(query, 10);
+      
+      TopDocs topDocs = searcher.search(queryPhrase, 10);
       
       for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
         Document document = searcher.doc(scoreDoc.doc);
